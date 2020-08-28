@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<form class="form-inline" method="POST" action="{% url 'add_task' %}">
+    {% csrf_token %}
+    <div class="form-group mb-2"> 
+      <input type="text" class="form-control"  name="text" placeholder="Add your task here...">
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Add</button>
+  </form>
+<br>
+<h1>My list</h1>
+<br>
+
+<table class="table table-striped table-dark">
+    <tbody>
+        {% if object_list %}
+        {% for item in object_list%}
+        <tr>
+            <td>
+                {% if item.important %}
+                    {% if item.complete %}
+                    <strike><a href="" style="color: #fec107;">{{item.text}}</a></strike>
+                    {% else %}
+                    <a href="" style="color: #fec107;">{{item.text}}</a>
+                    {% endif %}
+                {% else %}
+                    {% if item.complete %}
+                    <strike><a href="" style="color: white;">{{item.text}}</a></strike>
+                    {% else %}
+                    <a href="" style="color: white;">{{item.text}}</a>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td width='170px';>
+                {% if item.complete %}
+                <form action="{% url 'complete' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success">Uncross</button>
+                </form>
+                {% else %}
+                <form action="{% url 'complete' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success">Complete</button>
+                </form>
+                {% endif %}
+            </td>
+            <td width='170px';>
+                {% if item.important %}
+                <form action="{% url 'set_as_important' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-warning">Remove important tag</button>
+                </form>
+                {% else %}
+                <form action="{% url 'set_as_important' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-warning">Set as important</button>
+                </form>
+                {% endif %}
+            </td>
+            <td width='170px';>
+                <form action="{% url 'delete' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
